@@ -518,14 +518,18 @@ enum SimCardState {
 class SimCard {
   int slot;
   String imei;
+  String carrierName;
+  String number;
   SimCardState state;
 
-  SimCard({
-    @required this.slot,
-    @required this.imei,
-    this.state = SimCardState.Unknown
-  }) : assert(slot != null),
-       assert(imei != null);
+  SimCard(
+      {@required this.slot,
+      @required this.imei,
+      this.state = SimCardState.Unknown,
+      this.carrierName = "",
+      this.number = ""})
+      : assert(slot != null),
+        assert(imei != null);
 
   SimCard.fromJson(Map map) {
     if (map.containsKey('slot')) {
@@ -534,8 +538,14 @@ class SimCard {
     if (map.containsKey('imei')) {
       this.imei = map['imei'];
     }
+    if (map.containsKey('carrierName')) {
+      this.carrierName = map['carrierName'];
+    }
+    if (map.containsKey('number')) {
+      this.number = map['number'];
+    }
     if (map.containsKey('state')) {
-      switch(map['state']) {
+      switch (map['state']) {
         case 0:
           this.state = SimCardState.Unknown;
           break;
@@ -578,7 +588,7 @@ class SimCardsProvider {
     final simCards = new List<SimCard>();
 
     dynamic response = await _channel.invokeMethod('getSimCards', null);
-    for(Map map in response) {
+    for (Map map in response) {
       simCards.add(new SimCard.fromJson(map));
     }
 

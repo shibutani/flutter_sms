@@ -58,12 +58,15 @@ class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener
 
         try {
             TelephonyManager telephonyManager = new TelephonyManager(registrar.context());
+
             int phoneCount = telephonyManager.getSimCount();
             for (int i = 0; i < phoneCount; i++) {
                 JSONObject simCard = new JSONObject();
                 simCard.put("slot", i + 1);
                 simCard.put("imei", telephonyManager.getSimId(i));
                 simCard.put("state", telephonyManager.getSimState(i));
+                simCard.put("carrierName", telephonyManager.getCarrierName(i));
+                simCard.put("number", telephonyManager.getNumber(i));
                 simCards.put(simCard);
             }
         } catch (JSONException e) {
