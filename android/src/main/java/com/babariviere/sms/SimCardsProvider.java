@@ -21,6 +21,7 @@ class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener
     private final String[] permissionsList = new String[]{Manifest.permission.READ_PHONE_STATE};
     private PluginRegistry.Registrar registrar;
     private MethodChannel.Result result;
+    private boolean executed = false;
 
     SimCardsHandler(PluginRegistry.Registrar registrar, MethodChannel.Result result) {
         this.registrar = registrar;
@@ -44,15 +45,16 @@ class SimCardsHandler implements PluginRegistry.RequestPermissionsResultListener
             return true;
         }
         result.error("#01", "permission denied", null);
+        this.executed = true;
         return false;
     }
 
     void handle(Permissions permissions) {
         if (permissions.checkAndRequestPermission(permissionsList, Permissions.READ_PHONE_STATE)) {
+            this.executed = true;
             getSimCards();
         }
     }
-
     private void getSimCards() {
         JSONArray simCards = new JSONArray();
 
